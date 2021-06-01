@@ -1,8 +1,8 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
-	"io/ioutil"
 	"net"
 	"time"
 )
@@ -22,8 +22,12 @@ func handle(conn net.Conn) {
 	defer conn.Close()
 
 	go func() {
-		response, _ := ioutil.ReadAll(conn)
-		fmt.Println(string(response))
+		data := make([]byte, 10)
+		reader := bufio.NewReader(conn)
+		reader.Read(data)
+
+		//data, _ := ioutil.ReadAll(conn)
+		fmt.Println(string(data), "\t", len(data), "\t", cap(data))
 	}()
 
 	time.Sleep(1 * time.Second)

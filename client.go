@@ -16,7 +16,7 @@ func main() {
 	server := os.Args[1]
 	addr, _ := net.ResolveTCPAddr("tcp", server+":19875")
 	conn, _ := net.DialTCP("tcp", nil, addr)
-	_, _ = conn.Write([]byte("Hello TCP\n"))
+	_, _ = conn.Write([]byte("Hello TCP"))
 	response, _ := ioutil.ReadAll(conn)
 	fmt.Println(string(response))
 }
