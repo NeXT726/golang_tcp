@@ -2,33 +2,44 @@ package main
 
 import (
 	"bufio"
+	"bytes"
+	"encoding/binary"
 	"fmt"
 	"net"
 	"time"
 )
 
+type conData struct {
+	Addr      uint32
+	RemoteKey uint32
+}
+
 func main() {
+
+	var clientConData = conData{0, 000}
+
 	tcpServer, _ := net.ResolveTCPAddr("tcp", "10.251.31.97:19875")
 
 	listener, _ := net.ListenTCP("tcp", tcpServer)
 
 	for {
 		conn, _ := listener.Accept()
-		go handle(conn)
+		handle(conn, &clientConData)
+		fmt.Println(clientConData)
 	}
 }
 
-func handle(conn net.Conn) {
+func handle(conn net.Conn, cD *conData) {
 	defer conn.Close()
 
-	go func() {
-		data := make([]byte, 10)
-		reader := bufio.NewReader(conn)
-		reader.Read(data)
-
-		//data, _ := ioutil.ReadAll(conn)
-		fmt.Println(string(data), "\t", len(data), "\t", cap(data))
-	}()
+	data := make([]byte, 8)
+	reader := bufio.NewReader(conn)
+	reader.Read(data)
+	buf := bytes.NewBuffer(data)
+	err := binary.Read(buf, binary.LittleEndian, cD)
+	if err != nil {
+		fmt.Println("wrong:", err)
+	}
 
 	time.Sleep(1 * time.Second)
 	now := time.Now().String()
