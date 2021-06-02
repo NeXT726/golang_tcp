@@ -18,7 +18,7 @@ func main() {
 
 	var clientConData = conData{0, 000}
 
-	tcpServer, _ := net.ResolveTCPAddr("tcp", "10.251.31.97:19875")
+	tcpServer, _ := net.ResolveTCPAddr("tcp", ":19875")
 
 	listener, _ := net.ListenTCP("tcp", tcpServer)
 
